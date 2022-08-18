@@ -27,18 +27,7 @@ In the crashes data set, each row represents a crash.
 First, I retrieved the crashes data by making a request to the API. Then, I converted the geojson to a geoDataFrame.
 I filtered out crashes where the road_defect field contained the value 'DEBRIS IN ROADWAY' and eliminated crashes where the traffic control device was not working or functioning improperly in order to be able to rule these out as the cause of the crash.
 
-Because there were 3,877 null geometries, I tried to generate them from the address using geocoding and iterrows():
-
-  <code>for index, row in crashes_df.iterrows():
-      if row.geometry is None:
-          try:
-              geolocator = Nominatim(user_agent="colin")
-              location = geolocator.geocode(row['full_address'])
-              crashes_df.at[index, 'geometry'] = Point((location.longitude, location.latitude))
-          except:
-              print(index)<code>
-
-There were still 2,097 null geometries remaining. Upon further investigation, these were addresses such as '1 W Parking Lot A' and quite a few addresses on O'Hare International Airport grounds. These nonce addresses and O'Hare addresses were eliminated.
+Because there were 3,877 null geometries, I first tried to generate them from the address using geocoding and iterrows. After running this, there were still 2,097 null geometries remaining. Upon further investigation, these were addresses such as '1 W Parking Lot A' and quite a few addresses on O'Hare International Airport grounds. These nonce addresses and O'Hare addresses were eliminated.
 
 The fields 'injuries reported not evident' and 'injuries no indication' were combined into one category called 'injuries none'. These reflect crashes where a pedestrian or cyclist was hit but not injured.
 
