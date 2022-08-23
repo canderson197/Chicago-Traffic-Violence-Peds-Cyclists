@@ -84,20 +84,29 @@ These explanations can be found on the page for 'Crashes' on the data portal.
 #### Data cleaning
 The data was not normalized for traffic volume or population density. The latest publicly available traffic volume data for the city of Chicago is [here](https://data.cityofchicago.org/Transportation/Average-Daily-Traffic-Counts-Map/pf56-35rv). Not only is the information outdated, but normalizing incidents of traffic violence by traffic volume or population density has an insidious logical underpinning, which is that more people are going to get hurt on busier roads. It doesn't have to be this way, and simply isn't in many other global cities. In places like [Oslo and Helsinki](https://www.theguardian.com/world/2020/mar/16/how-helsinki-and-oslo-cut-pedestrian-deaths-to-zero), they have gone entire calendar years with zero traffic deaths for any type of road user.
 
-#### Tableau
+#### Tableau dashboard
 
 Wrong roadway class?
+
 There are times when the tool tip on the map might say something like “1000 N Cicero Ave” but say “other streets” for roadway class even though Cicero Avenue is an arterial road at that location. The reason for the discrepancy is as follows: The address is a field populated with what the police officer put in the report. The roadway class is a field generated using longitude and latitude, where the longitude and latitude was a point geometry that was spatially joined (gpd.sjoin_nearest) to a multilinestring from the Street Center Lines dataset. The multilinestrings each contained a value for the roadway class, so the join returned a roadway class for each point geometry. The max_distance argument in sjoin_nearest was set equal to 0.001. This max distance was determined through trial and error until all point geometries had non-null values after the spatial join. All that to say, while the roadway class is matched to the long/lat, it may not be an exact match with the address. In the case of "1000 N Cicero Ave" and roadway class, "other streets" refers to Augusta Blvd. A look up of the long/lat of this crash (-87.74604, 41.89873) also suggests it may have happened on August Blvd, not Cicero Ave. Finally, the utility of the roadway class field also becomes less relevant for crashes that occurred at intersections.
 
 Where is x crash I heard about?
+
 If there is a specific crash you’re expecting to see in the data but don’t, there are many reasons it might not be there. For an overview of what data was included, refer to the “data cleaning” section above. It’s also worth mentioning that while large datasets like these are useful for seeing trends, they often aren’t great for looking at individual occurrences of a given phenomenon. For instance, the killing of cyclist Joshua Avina-Luna on 6/24/22 does not appear as a “fatality” in this dataset because he was pronounced dead at a hospital a few days later, not at the time and place of the crash. The same is true for other cases like that of Gerardo Marciales and Paresh Chhatrala. Large analyses like this one are not great at capturing this, nor is it their intended purpose.
 
 Whose fault?
+
 Primary and secondary contributory causes are entered per crash, not per unit (units are motor or non-motor vehicles, including pedestrians and cyclists). Units that are "known or perceived" to be at fault are listed as unit_no '1' in Vehicles. If fault cannot be determined, the "striking unit" is listed as unit_no '1'. In the crashes included here, 1,131 of 14,389 have the pedestrian listed as unit_no '1' and 2,626 of 9,292 have the cyclist listed as unit_no '1'. Unfortunately, with current reporting practices, we cannot know if these are cases where that unit was "at fault" or simply the "striking" unit. With pedestrians, it seems unlikely that they could be considered the "striking unit", though with cyclists this is more plausible.
+
+Where are the map layers?
+
+A quirk of Tableau is that you cannot toggle on and off map layers when a map is in a story, only when it is in a dashboard. Therefore, the pedestrian and cyclist maps from the story are available as individual dashboards on my Tableau Public profile. Links are also below.
 
 ### Findings and conclusions
 [Tableau story](https://public.tableau.com/app/profile/canderson197/viz/ChicagoTrafficViolenceCrashesInvolvingPedestriansCyclists/Story1)
+
 [Tableau pedestrian crashes map](https://public.tableau.com/app/profile/canderson197/viz/ChicagoPedestriansHitbyCarswithMapLayers/Dashboard7) with layer capabilities
+
 [Tableau cyclist crashes map](https://public.tableau.com/app/profile/canderson197/viz/ChicagoCyclistsHitbyCarswithMapLayers/Dashboard8) with layer capabilities
 
 RQ1, highlighted findings
@@ -109,9 +118,11 @@ Where do cyclist fatalities occur?
 Cyclist fatalities are less tied to economics and race than pedestrian fatalities. Many cyclist crashes occur along official bike routes, which suggests that current infrastructure of painted lines is not adequate in protecting cyclists. We also see certain types of bike routes that may be better than others. For instance, neighborhood greenways have fewer crashes than other types of bike routes.
 
 RQ2, highlighted findings
+
 The top category for both pedestrian and cyclist crashes is “unable to determine”, followed by the driver failing to yield the right-of-way. The first takeaway here is that cause documentation is not robust in pedestrian and cyclist crashes. We need better data collection methods if we are going to understand why these crashes occur, for example, officers being required to record something more informative than “unable to determine” except under very exceptional circumstances. A second key takeaway is this: The fact that the top causes for these crashes is that we don’t know, or a cause that has to do with driver behavior, points to another root cause altogether that is not captured in the categories that we have available, which is that of dangerous design. We know that street design is a major factor in how people in cars behave, and right now, the design is causing pedestrians and cyclists who are using the infrastructure appropriately to still get hit by cars.
 
 RQ3, highlighted findings
+
 We see that the large majority of the time pedestrians are hit, they are crossing with the signal and using crosswalks. We also see the same data collection problem as before crop up again, with categories like “other action” and “unknown” in the top 5. Similarly, cyclists are most often biking with traffic in the roadway, which on most Chicago streets, is the only option available to them. Pedestrians and cyclists are using the infrastructure appropriately, therefore the problem would seem to lie with a failure to design infrastructure that keeps these users safe.
 
 Thanks to Chris Wright, Joshua Rio Ross, and all the great instructors at NSS. S/o to my DDA7 classmates. We did it!
